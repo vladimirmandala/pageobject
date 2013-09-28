@@ -69,7 +69,9 @@ bc.. Feature: Products are key to our success.
       | title       | Product A       |
       | description | A great product |
 
-p. And the Given is where we will want to use the new @PageObject@.
+h3. Navigation
+
+p. And the Given is where we will want to use the new @PageObject@ to navigate to the page.
 
 bc.. Given(/^We wish to enter a new product$/) do
   @product_page = ProductPage.new(@browser)
@@ -79,6 +81,27 @@ end
 
 p. The @visit_page@ method uses the @page_url@ method inside the @PageObject@
 
+h3. Setting Values
+
+The @When@ step is going to fill in the form using the PageObject:
+
+bc.. When(/^The following product is entered$/) do |table|
+  data = table.rows_hash
+  @product_page.title = data['title']
+  @product_page.description = data['description']
+  @product_page.create_product
+end
+
+h3. Asserting Expected Results
+
+The @Then@ is where we will use the PageObject to check for results.
+
+bc.. Then(/^I should see the product listed$/) do |table|
+  data = table.rows_hash
+  @product_page.text.should have_content('Product was successfully created')
+  @product_page.text.should have_content(data['title'])
+  @product_page.text.should have_content(data['description'])
+end
 
 h2. Ruby on Rails
 
