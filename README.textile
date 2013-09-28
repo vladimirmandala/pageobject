@@ -1,22 +1,84 @@
+bq. *NOTE: Currently just a DRAFT. I need to verify with Jeff Morgan if I am doing things properly.*
+
 h1. Pageobject
 
 This application was generated with the "rails_apps_composer":https://github.com/RailsApps/rails_apps_composer gem provided by the "RailsApps Project":http://railsapps.github.io/.
 
-h2. Diagnostics
+Its purpose is to demonstrate how to configure and use Jeff Morgan's (aka, Cheezy) "PageObject gem":https://github.com/cheezy/page-object
 
-This application was built with recipes that are known to work together.
+h2. Getting Started with PageObject
 
-This application was built with preferences that are NOT known to work together.
+h3. Configuration
 
-If the application doesn't work as expected, please "report an issue":https://github.com/RailsApps/rails_apps_composer/issues and include these diagnostics:
+* Add the following to @Gemfile@
 
-We'd also like to know if you've found combinations of recipes or preferences that do work together.
+bc. group :test do
+  gem 'page-object'
+  gem 'cucumber-rails', :require => false
+  gem 'rspec-rails'
+  gem 'database_cleaner'
+  gem 'selenium-webdriver'
+end
 
-Recipes:
-["apps4", "controllers", "core", "email", "extras", "frontend", "gems", "git", "init", "models", "prelaunch", "railsapps", "readme", "routes", "saas", "setup", "testing", "views"]
+* Add the following to @features/support/env.rb@
 
-Preferences:
-{:git=>true, :apps4=>"rails-bootstrap", :database=>"default", :unit_test=>false, :integration=>false, :fixtures=>false, :frontend=>"bootstrap", :bootstrap=>"sass", :email=>"none", :authentication=>false, :devise_modules=>false, :authorization=>false, :starter_app=>false, :form_builder=>"simple_form", :quiet_assets=>true, :local_env_file=>true, :better_errors=>true, :dev_webserver=>"thin", :prod_webserver=>"thin", :templates=>"haml", :continuous_testing=>"none", :github=>true}
+bc. require 'selenium-webdriver'
+require 'page-object'
+require 'cucumber/rails'
+
+* And at the end of @features/support/env.rb@
+
+bc. World(PageObject::PageFactory)
+Before do
+  @browser = Selenium::WebDriver.for :firefox
+end
+
+h3. Page Objects
+
+You can model your page by creating a class, and including PageObject module.
+
+Check out @features/support/product_page.rb@
+
+bc.. class ProductPage
+  include PageObject
+
+  page_url('http://localhost:3000/products/new')
+
+  text_field(:title, :id => 'product_title')
+  text_field(:description, :id => 'product_description')
+  text_field(:price, :id => 'product_price')
+  button(:create_product, :name => 'commit')
+end
+
+p. You simply create representations of the aspects of the page that you wish to interact with. For example,
+if it is a form, you will likely want to create feature files to exercise filling in the form.
+
+h2. Using PageObjects in Steps
+
+You can see the simple feature in @features/product.feature@
+
+bc.. Feature: Products are key to our success.
+  We need to be able to manage our product data.
+
+  Scenario: Create a new product
+    Given We wish to enter a new product
+    When The following product is entered
+      | title       | Product A       |
+      | description | A great product |
+    Then I should see the product listed
+      | title       | Product A       |
+      | description | A great product |
+
+p. And the Given is where we will want to use the new @PageObject@.
+
+bc.. Given(/^We wish to enter a new product$/) do
+  @product_page = ProductPage.new(@browser)
+  visit_page ProductPage
+  #click_link 'New Product'
+end
+
+p. The @visit_page@ method uses the @page_url@ method inside the @PageObject@
+
 
 h2. Ruby on Rails
 
@@ -40,26 +102,6 @@ h2. Development
 * Authentication: None
 * Authorization: None
 
-
-
-
-
-h2. Getting Started
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-
-h2. Documentation and Support
-
-This is the only documentation.
-
-h4. Issues
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-
-h2. Similar Projects
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-
 h2. Contributing
 
 If you make improvements to this application, please share with others.
@@ -73,8 +115,8 @@ If you add functionality to this application, create an alternative implementati
 
 h2. Credits
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Cheezy
 
 h2. License
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Enjoy

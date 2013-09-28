@@ -1,7 +1,6 @@
 Given(/^We wish to enter a new product$/) do
   @product_page = ProductPage.new(@browser)
   visit_page ProductPage
-
   #click_link 'New Product'
 end
 
