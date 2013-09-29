@@ -5,6 +5,7 @@
 # files.
 require 'selenium-webdriver'
 require 'page-object'
+require 'page-object/page_factory'
 require 'cucumber/rails'
 
 
@@ -64,4 +65,8 @@ World(PageObject::PageFactory)
 Before do
   #@browser = Watir::Browser.new 'firefox', :profile => $profile
   @browser = Selenium::WebDriver.for :firefox
+end
+
+After do
+  @browser.close
 end
