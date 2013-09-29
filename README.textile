@@ -24,6 +24,7 @@ end
 
 bc. require 'selenium-webdriver'
 require 'page-object'
+require 'page-object/page_factory'
 require 'cucumber/rails'
 
 * And at the end of @features/support/env.rb@
