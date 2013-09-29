@@ -28,9 +28,13 @@ require 'cucumber/rails'
 
 * And at the end of @features/support/env.rb@
 
-bc. World(PageObject::PageFactory)
+bc.. World(PageObject::PageFactory)
 Before do
   @browser = Selenium::WebDriver.for :firefox
+end
+
+After do
+  @browser.close
 end
 
 h3. Page Objects
