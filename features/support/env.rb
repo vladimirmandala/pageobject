@@ -86,7 +86,6 @@ Capybara.register_driver :webkit do |app|
   Capybara::Driver::Webkit.new(app, :ignore_ssl_errors => true)
 end
 
-World(Capybara)
 World(PageObject::PageFactory)
 
 Before do
@@ -96,3 +95,5 @@ end
 After do
   @browser.close
 end
+
+World(Capybara)
