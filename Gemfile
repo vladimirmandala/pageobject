@@ -16,6 +16,7 @@ gem 'simple_form', '>= 3.0.0.rc'
 gem 'thin'
 
 group :test do
+  gem "factory_girl_rails", "~> 4.0"
   gem 'page-object'
   gem 'cucumber-rails', :require => false
   gem 'rspec-rails'

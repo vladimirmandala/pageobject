@@ -10,10 +10,10 @@ Given(/^A handful of products$/) do |table|
   products = table.hashes
   start = Product.count
   products.each do |product|
-    p = Product.create(product)
+    p = FactoryGirl.create(:product, product)
   end
-  #puts "Created #{Product.count - start} new products"
-  #puts Product.all.each {|p| puts p.title}
+  puts "Created #{Product.count - start} new products in #{RAILS_ENV}"
+  puts Product.all.each {|p| puts p.title}
 end
 
 When(/^The following product is entered$/) do |table|

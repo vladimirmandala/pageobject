@@ -97,3 +97,4 @@ After do
 end
 
 World(Capybara)
+World(FactoryGirl::Syntax::Methods)
