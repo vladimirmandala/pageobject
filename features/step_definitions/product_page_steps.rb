@@ -1,9 +1,9 @@
 Given(/^We wish to enter a new product$/) do
-  visit_page ProductPage
+  visit ProductPage
 end
 
 Given(/^We are viewing the product listing$/) do
-  visit_page ProductPageList
+  visit ProductPageList
 end
 
 Given(/^A handful of products$/) do |table|
@@ -12,8 +12,8 @@ Given(/^A handful of products$/) do |table|
   products.each do |product|
     p = Product.create(product)
   end
-  puts "Created #{Product.count - start} new products"
-  puts Product.all.each {|p| puts p.title}
+  #puts "Created #{Product.count - start} new products"
+  #puts Product.all.each {|p| puts p.title}
 end
 
 When(/^The following product is entered$/) do |table|
