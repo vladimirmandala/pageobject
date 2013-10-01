@@ -19,8 +19,9 @@ group :test do
   gem 'page-object'
   gem 'cucumber-rails', :require => false
   gem 'rspec-rails'
-  gem 'database_cleaner'
+  gem 'database_cleaner', '<= 1.0.1'
   gem 'selenium-webdriver'
+  gem 'capybara'
 end
 
 group :development do

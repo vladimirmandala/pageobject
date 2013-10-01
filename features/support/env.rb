@@ -3,16 +3,11 @@
 # newer version of cucumber-rails. Consider adding your own code to a new file
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
+#require 'database_cleaner'
 require 'selenium-webdriver'
 require 'page-object'
 require 'page-object/page_factory'
 require 'cucumber/rails'
-
-
-# Capybara defaults to CSS3 selectors rather than XPath.
-# If you'd prefer to use XPath, just uncomment this line and adjust any
-# selectors in your step definitions to use the XPath syntax.
-# Capybara.default_selector = :xpath
 
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how 
@@ -57,13 +52,44 @@ end
 # Possible values are :truncation and :transaction
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
-Cucumber::Rails::Database.javascript_strategy = :truncation
+Cucumber::Rails::Database.javascript_strategy = :transaction
+
+Capybara.app_host = 'http://localhost:3000'
+
+# Capybara defaults to CSS3 selectors rather than XPath.
+# If you'd prefer to use XPath, just uncomment this line and adjust any
+# selectors in your step definitions to use the XPath syntax.
+# Capybara.default_selector = :xpath
+
+Capybara.default_driver = :selenium
+
+# Switch up your browser by selecting the appropriate Driver
+Capybara.register_driver :selenium do |app|
+
+  # FIREFOX
+  profile = Selenium::WebDriver::Firefox::Profile.new
+  profile.assume_untrusted_certificate_issuer = false
+  Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile)
+
+  # CHROME
+  #profile = Selenium::WebDriver::Chrome::Profile.new
+  #Capybara::Selenium::Driver.new(app, :browser => :chrome, :profile => profile)
+
+  # INTERNET EXPLORER
+  #Capybara::Selenium::Driver.new(app, :browser => :ie)
+end
+
+# Capybara.javascript_driver = :selenium
+Capybara.javascript_driver = :webkit
+
+Capybara.register_driver :webkit do |app|
+  Capybara::Driver::Webkit.new(app, :ignore_ssl_errors => true)
+end
 
 World(Capybara)
 World(PageObject::PageFactory)
 
 Before do
-  #@browser = Watir::Browser.new 'firefox', :profile => $profile
   @browser = Selenium::WebDriver.for :firefox
 end
 
