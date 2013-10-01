@@ -47,12 +47,24 @@ Check out @features/support/product_page.rb@
 bc.. class ProductPage
   include PageObject
 
-  page_url('http://localhost:3000/products/new')
+  page_url("http://localhost:3000/products/new")
 
   text_field(:title, :id => 'product_title')
   text_field(:description, :id => 'product_description')
   text_field(:price, :id => 'product_price')
   button(:create_product, :name => 'commit')
+end
+
+class ProductPageList
+  include PageObject
+
+  page_url("http://localhost:3000/products")
+
+  text_field(:title, :class => 'title')
+  text_field(:description, :class => 'description')
+  text_field(:price, :class => 'price')
+
+  link(:new_product, :link_text => 'New Product')
 end
 
 p. You simply create representations of the aspects of the page that you wish to interact with. For example,
@@ -66,7 +78,8 @@ bc.. Feature: Products are key to our success.
   We need to be able to manage our product data.
 
   Scenario: Create a new product
-    Given We wish to enter a new product
+    Given We are viewing the product listing
+    And We wish to enter a new product
     When The following product is entered
       | title       | Product A       |
       | description | A great product |
@@ -79,9 +92,11 @@ h3. Navigation
 p. And the Given is where we will want to use the new @PageObject@ to navigate to the page.
 
 bc.. Given(/^We wish to enter a new product$/) do
-  @product_page = ProductPage.new(@browser)
   visit_page ProductPage
-  #click_link 'New Product'
+end
+
+Given(/^We are viewing the product listing$/) do
+  visit_page ProductPageList
 end
 
 p. The @visit_page@ method uses the @page_url@ method inside the @PageObject@
@@ -92,9 +107,11 @@ The @When@ step is going to fill in the form using the PageObject:
 
 bc.. When(/^The following product is entered$/) do |table|
   data = table.rows_hash
-  @product_page.title = data['title']
-  @product_page.description = data['description']
-  @product_page.create_product
+  on(ProductPage) do |page|
+    page.title = data['title']
+    page.description = data['description']
+    page.create_product
+  end
 end
 
 h3. Asserting Expected Results
@@ -103,9 +120,11 @@ The @Then@ is where we will use the PageObject to check for results.
 
 bc.. Then(/^I should see the product listed$/) do |table|
   data = table.rows_hash
-  @product_page.text.should have_content('Product was successfully created')
-  @product_page.text.should have_content(data['title'])
-  @product_page.text.should have_content(data['description'])
+  on(ProductPageList) do |page|
+    page.text.should have_content('Product was successfully created')
+    page.text.should have_content(data['title'])
+    page.text.should have_content(data['description'])
+  end
 end
 
 h2. Ruby on Rails
