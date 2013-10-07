@@ -12,7 +12,7 @@ Given(/^A handful of products$/) do |table|
   products.each do |product|
     p = FactoryGirl.create(:product, product)
   end
-  puts "Created #{Product.count - start} new products in #{RAILS_ENV}"
+  puts "Created #{Product.count - start} new products in #{Rails.env}"
   puts Product.all.each {|p| puts p.title}
 end
 
@@ -36,7 +36,9 @@ end
 
 Then(/^I should see the products$/) do |table|
   products = table.hashes
+  puts "Looking for the new products in #{Rails.env}"
   on(ProductPageList) do |page|
+    puts "Current page text: #{page.text} "
     products.each do |product|
       page.text.should have_content(product['title'])
       page.text.should have_content(product['description'])
