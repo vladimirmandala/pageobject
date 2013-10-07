@@ -90,16 +90,15 @@ bc.. Feature: Products are key to our success.
 h3. Navigation
 
 p. And the Given is where we will want to use the new @PageObject@ to navigate to the page.
+The @visit@ (or @visit_page@) method uses the @page_url@ method inside the @PageObject@
 
 bc.. Given(/^We wish to enter a new product$/) do
-  visit_page ProductPage
+  visit ProductPage
 end
 
 Given(/^We are viewing the product listing$/) do
-  visit_page ProductPageList
+  visit ProductPageList
 end
-
-p. The @visit_page@ method uses the @page_url@ method inside the @PageObject@
 
 h3. Setting Values
 
@@ -162,7 +161,7 @@ If you add functionality to this application, create an alternative implementati
 
 h2. Credits
 
-Cheezy
+Cheezy (aka, Jeff Morgan)
 
 h2. License
 
